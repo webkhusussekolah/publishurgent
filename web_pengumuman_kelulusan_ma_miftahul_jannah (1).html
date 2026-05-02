@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pengumuman Kelulusan</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#1e3a8a,#3b82f6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  color:white;
+}
+
+.card {
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(15px);
+  border-radius:20px;
+  padding:30px;
+  width:350px;
+  text-align:center;
+}
+
+input,button{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:10px;
+  border:none;
+}
+
+button{background:#2563eb;color:white;cursor:pointer;}
+
+.result{
+  margin-top:15px;
+  text-align:left;
+  background:rgba(255,255,255,0.2);
+  padding:15px;
+  border-radius:10px;
+  display:none;
+}
+
+.success{color:#22c55e;font-weight:bold;}
+.fail{color:#ef4444;font-weight:bold;}
+
+.countdown{
+  font-size:18px;
+  margin-bottom:15px;
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+<h2>PENGUMUMAN KELULUSAN</h2>
+<p>MA MIFTAHUL JANNAH</p>
+<p>Tahun 2025/2026</p>
+
+<div id="countdown" class="countdown"></div>
+
+<div id="formArea" style="display:none;">
+<input type="text" id="nisn" placeholder="Masukkan NISN">
+<button onclick="cekKelulusan()">Cek Kelulusan</button>
+</div>
+
+<div id="hasil" class="result"></div>
+</div>
+
+<script>
+const waktuBuka = new Date("2026-05-04T15:00:00+07:00").getTime();
+
+const dataSiswa = [
+  { nisn: "0067560664", nama: "AGRAYANI", status: "LULUS", kelas: "XII" },
+  { nisn: "0086919938", nama: "AIDIL FITRIANSYAH", status: "LULUS", kelas: "XII" },
+  { nisn: "0087009148", nama: "ANISA PUTRI AGUSTIUS", status: "LULUS", kelas: "XII" },
+  { nisn: "0088911378", nama: "APRILIYA NURAINI", status: "LULUS", kelas: "XII" },
+  { nisn: "0072395156", nama: "AYU AZHARI", status: "LULUS", kelas: "XII" }
+];
+
+const countdownEl = document.getElementById("countdown");
+const formArea = document.getElementById("formArea");
+
+setInterval(()=>{
+  const sekarang = new Date().getTime();
+  const selisih = waktuBuka - sekarang;
+
+  if(selisih <= 0){
+    countdownEl.innerHTML = "Pengumuman sudah dibuka";
+    formArea.style.display = "block";
+    return;
+  }
+
+  const hari = Math.floor(selisih/(1000*60*60*24));
+  const jam = Math.floor((selisih%(1000*60*60*24))/(1000*60*60));
+  const menit = Math.floor((selisih%(1000*60*60))/(1000*60));
+  const detik = Math.floor((selisih%(1000*60))/1000);
+
+  countdownEl.innerHTML = `Dibuka dalam: ${hari}h ${jam}j ${menit}m ${detik}d`;
+},1000);
+
+function cekKelulusan(){
+ const nisnInput=document.getElementById("nisn").value.trim();
+ const hasil=document.getElementById("hasil");
+ const siswa=dataSiswa.find(s=>s.nisn===nisnInput);
+
+ hasil.style.display='block';
+
+ if(siswa){
+   hasil.innerHTML=`
+   <p><strong>NISN:</strong> ${siswa.nisn}</p>
+   <p><strong>Nama:</strong> ${siswa.nama}</p>
+   <p><strong>Status:</strong> <span class="${siswa.status==='LULUS'?'success':'fail'}">${siswa.status}</span></p>
+   <p><strong>Kelas:</strong> ${siswa.kelas}</p>
+   ${siswa.status==='LULUS'?'<h3>🎉 SELAMAT ANDA LULUS 🎉</h3>':''}
+   `;
+ }else{
+   hasil.innerHTML="<p class='fail'>Data tidak ditemukan!</p>";
+ }
+}
+</script>
+
+</body>
+</html>
